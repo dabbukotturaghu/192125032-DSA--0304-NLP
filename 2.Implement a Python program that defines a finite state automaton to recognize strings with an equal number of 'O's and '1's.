@@ -1,0 +1,38 @@
+class State:
+    def __init__(self, name):
+        self.name = name
+        self.transitions = {}
+    def add_transition(self, symbol, state):
+        self.transitions[symbol] = state
+class FiniteAutomaton:
+    def __init__(self):
+        self.states = {}
+        self.current_state = None
+        self.create_states()
+    def create_states(self):
+        q0 = State('q0')
+        q1 = State('q1')
+        q2 = State('q2')
+        q0.add_transition('0', q1)
+        q0.add_transition('1', q2)
+        q1.add_transition('0', q0)
+        q1.add_transition('1', q2)
+        q2.add_transition('0', q1)
+        q2.add_transition('1', q0)
+        self.states = {'q0': q0, 'q1': q1, 'q2': q2}
+        self.current_state = q0
+    def process_input(self, input_string):
+        for symbol in input_string:
+            if symbol not in self.current_state.transitions:
+                return False
+            self.current_state = self.current_state.transitions[symbol]
+        return self.current_state == self.states['q0']
+if __name__ == "__main__":
+    automaton = FiniteAutomaton()
+    strings_to_check = ["", "0011", "0101", "1100", "101010", "111000", "000111"]
+    for string in strings_to_check:
+        result = automaton.process_input(string)
+        if result:
+            print(f"'{string}' has an equal number of '0's and '1's.")
+        else:
+            print(f"'{string}' does not have an equal number of '0's and '1's.")
