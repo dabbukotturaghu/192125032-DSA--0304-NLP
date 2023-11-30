@@ -1,0 +1,41 @@
+nltk.download('stopwords')
+nltk.download('punkt')
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.probability import FreqDist
+from nltk.classify import NaiveBayesClassifier
+from nltk.classify.util import accuracy
+texts = [
+    ("Hey, how are you doing today?", "normal"),
+    ("Get a free gift by signing up now!", "spam"),
+    ("The quick brown fox jumps over the lazy dog", "normal"),
+    ("Free money!!!", "spam"),
+    ("Check out our latest deals", "spam"),
+    ("How about a game of tennis tomorrow?", "normal")
+]
+all_words = []
+documents = []
+stop_words = set(stopwords.words("english"))
+for text, label in texts:
+    words = word_tokenize(text.lower())
+    words = [word for word in words if word.isalpha() and word not in stop_words]
+    all_words.extend(words)
+    documents.append((words, label))
+all_words = FreqDist(all_words)
+word_features = list(all_words.keys())[:50]
+def extract_features(document):
+    words = set(document)
+    features = {}
+    for word in word_features:
+        features[word] = (word in words)
+    return features
+featuresets = [(extract_features(words), label) for (words, label) in documents]
+train_set, test_set = featuresets[2:], featuresets[:2]  # Using a small dataset, adjust as needed
+classifier = NaiveBayesClassifier.train(train_set)
+print("Accuracy:", accuracy(classifier, test_set))
+new_text = "Get free money now!!!"
+words = word_tokenize(new_text.lower())
+words = [word for word in words if word.isalpha() and word not in stop_words]
+predicted_label = classifier.classify(extract_features(words))
+print("Predicted Label:", predicted_label)
