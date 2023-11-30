@@ -1,0 +1,7 @@
+import nltk
+text = "The sun is shining brightly. I love reading interesting books."
+sentences = nltk.sent_tokenize(text)
+for sentence in sentences:
+    words = nltk.word_tokenize(sentence)
+    tagged_words = nltk.pos_tag(words)
+    print(tagged_words)
