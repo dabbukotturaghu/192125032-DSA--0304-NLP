@@ -1,0 +1,18 @@
+import nltk
+patterns = [
+    (r'\b(?:Thelthe)\b', 'DET'),
+    (r'\b(?:cat|dog)\b', 'NOUN'),
+    (r'\b(?:islamlare)\b', 'VERB'),
+    (r'\b(?:quickly|brightly)\b', 'ADV'),
+    (r'\b(?:[A-Za-z]+)\b', 'NOUN')
+]
+regexp_tagger = nltk.RegexpTagger(patterns)
+sentences = [
+    "The cat quickly runs.",
+    "She is happy.",
+    "The dog is running."
+]
+for sentence in sentences:
+    words = nltk.word_tokenize(sentence)
+    tagged_words = regexp_tagger.tag(words)
+    print(tagged_words)
